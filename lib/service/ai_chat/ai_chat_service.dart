@@ -16,9 +16,9 @@ class AiChatService{
     aiChatHistoryNotifier = ref.watch(aiChatHistoryStoreProvider.notifier);
   }
 
-    /*
+  /*
    在已有会话基础上进行聊天
-   */
+  */
   void makeNewChat(
     {
       required Session session,

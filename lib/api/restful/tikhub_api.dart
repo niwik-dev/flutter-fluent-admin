@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter_admin/model/request/fetch_video_comment_body.dart';
 import 'package:flutter_admin/model/response/fetch_home_feed.dart';
 import 'package:flutter_admin/model/response/fetch_video_comment.dart';
@@ -30,6 +33,14 @@ class DouYinWebApi{
             "Authorization": "Bearer $authToken",
           },
         ),
+      );
+      httpClient.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          return HttpClient()
+            ..findProxy = (url) {
+              return "PROXY 127.0.0.1:7890";
+            };
+        }
       );
       isClientInitialized = true;
     }
@@ -65,7 +76,8 @@ class DouYinWebApi{
         freshIndex: freshIndex,
       ).toJson(),
     );
-    final result = FetchHomeFeedResponse.fromJson(response.data);
+
+    final result = FetchHomeFeedResponse.fromJson(response.data["data"]);
     return result;
   }
 
@@ -83,7 +95,7 @@ class DouYinWebApi{
         count: count,
       ).toJson()
     );
-    final result = FetchVideoCommentsResponse.fromJson(response.data);
+    final result = FetchVideoCommentsResponse.fromJson(response.data["data"]);
     return result;
   }
 

@@ -1,79 +1,51 @@
-import 'package:flutter_admin/api/restful/tikhub_api.dart';
+import 'package:flutter_admin/service/short_video/douyin_service.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../model/view/comment_info.dart';
 import '../../model/view/video_info.dart';
+import '../../store/short_video/short_video_store.dart';
 
 class ShortVideoService{
-  // 单例模式
-  static final ShortVideoService _instance = ShortVideoService._internal();
-  factory ShortVideoService() => _instance;
-  ShortVideoService._internal();
+  late var shortVideoStore;
+  late ShortVideoStore shortVideoStoreNotifier;
+  
+  // 每次加载的短视频数量
+  static const int videoCountPerLoading = 10;
+  // 最少提前加载短视频数量
+  static const int minVideoCountPreLoad = 1;
 
-  final DouYinWebApi douYinWebApi = DouYinWebApi();
+  DouYinWebService douYinWebService = DouYinWebService();
 
-  Future<List<VideoInfo>> getDouYinVideo() async {
-    final fetchHomeFeed = await douYinWebApi.fecthHomeFeed(count: 1, freshIndex: 1);
-    List<VideoInfo> videoList = [];
-    fetchHomeFeed.awemeList?.forEach((item){
-      final videoId = item.awemeId;
-      final videoUrl = item.video?.bitRate?.first.playAddr?.urlList?.last;
-      final authorThumbUrl = item.author?.avatarThumb?.urlList?.first;
-      final authorNickName = item.author?.nickname;
-      final caption = item.caption;
-      final description = item.desc;
-      final commentCount = item.statistics?.commentCount;
-      final diggCount = item.statistics?.diggCount;
-      final shareCount = item.statistics?.shareCount;
-      final collectCount = item.statistics?.collectCount;
-      final playCount = item.statistics?.playCount;
-      final createdTime = item.createTime;
-
-      videoList.add(
-        VideoInfo(
-          videoId: videoId,
-          videoUrl: videoUrl,
-          authorThumbUrl: authorThumbUrl,
-          authorNickName: authorNickName,
-          caption: caption,
-          description: description,
-          commentCount: commentCount,
-          diggCount: diggCount,
-          shareCount: shareCount,
-          collectCount: collectCount,
-          playCount: playCount,
-          createTime: createdTime,
-        )
-      );
-    });
-    return videoList;
+  bool isVideoLoadingFinished(){    
+    return shortVideoStore.videoList.length > shortVideoStore.currentVideoIndex - minVideoCountPreLoad;
   }
 
-  Future<List<CommentInfo>> getDouYinVideoComments({
-    required String videoId,
-    int count = 10,
-    int cursor = 0,
-  }) async {
-    final fetchVideoComments = await douYinWebApi.fetchVideoComments(
-      awemeId: videoId,
-      count: count,
-      cursor: cursor,
+  ShortVideoService(WidgetRef ref){
+    shortVideoStore = ref.watch(shortVideoStoreProvider);
+    shortVideoStoreNotifier = ref.watch(shortVideoStoreProvider.notifier);
+  }
+  
+  Future<void> loadNewShortVideoList() async{ 
+    if(shortVideoStore.videoList.length - shortVideoStore.currentVideoIndex >= minVideoCountPreLoad){
+      return;
+    }
+    List<VideoInfo> totalVideoList = [];
+    while(totalVideoList.length < videoCountPerLoading){
+      final videoList = await douYinWebService.getDouYinVideo();
+      totalVideoList.addAll(videoList);
+    }
+    shortVideoStoreNotifier.addNewVideos(totalVideoList);
+  }
+
+  VideoInfo getCurrentVideo(){
+    return shortVideoStoreNotifier.getCurrentVideo();
+  }
+
+  Future<VideoInfo?> gotoNextVideo() async{
+    loadNewShortVideoList().then(
+      (value) {
+        return shortVideoStoreNotifier.gotoNextVideo();
+      }
     );
-    List<CommentInfo> commentsList = [];
-    fetchVideoComments.comments?.forEach((comment){
-      commentsList.add(
-        CommentInfo(
-          commentId: comment.cid,
-          commentText: comment.text,
-          userId: comment.user?.uid,
-          userName: comment.user?.nickname,
-          userAvatar: comment.user?.avatarThumb?.urlList?.last,
-          createTime: comment.createTime,
-          diggCount: comment.diggCount,
-          isAuthorDigged: comment.isAuthorDigged,
-          ipLabel: comment.ipLabel,
-        )
-      );
-    });
-    return commentsList;
+    return null;
   }
 }

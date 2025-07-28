@@ -4,7 +4,7 @@ import 'package:flutter_admin/pages/error/error_page.dart';
 import 'package:flutter_admin/pages/index/index_page.dart';
 import 'package:go_router/go_router.dart';
 
-import '../pages/video/video_page.dart';
+import '../pages/short_video/short_video_page.dart';
 import '../router/navigation/route.dart';
 import '../layout/layout.dart';
 import '../pages/help/help_page.dart';
@@ -17,7 +17,7 @@ class AppRouter{
 
   static GoRouter buildAppRouter() {
     return GoRouter(
-        initialLocation: '/login',
+        initialLocation: '/',
         errorPageBuilder: (context, state) => CustomTransitionPage<void>(
           child: const ErrorPage(),
           barrierColor: FluentTheme.of(context).micaBackgroundColor,
@@ -78,7 +78,7 @@ class AppRouter{
                       PaneItem(
                         title: const Text('短视频'),
                         icon: const Icon(FluentIcons.video),
-                        body: const VideoPage(),
+                        body: const ShortVideoPage(),
                       )
                     ],
                     footerItems: [

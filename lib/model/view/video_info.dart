@@ -1,16 +1,16 @@
 class VideoInfo{
-  String? videoId;
-  String? videoUrl;
-  String? authorThumbUrl;
-  String? authorNickName;
-  String? caption;
-  String? description;
-  int? commentCount;
-  int? diggCount;
-  int? shareCount;
-  int? collectCount;
-  int? playCount;
-  int? createTime;
+  String? videoId;        // 视频id
+  String? videoUrl;       // 视频链接
+  String? authorThumbUrl; // 创作者头像
+  String? authorNickName; // 创建作者昵称
+  String? caption;        // 视频标题
+  String? description;    // 视频描述
+  int? commentCount;      // 评论数
+  int? diggCount;         // 点赞数
+  int? shareCount;        // 分享数
+  int? collectCount;      // 收藏数
+  int? playCount;         // 播放数
+  int? createTime;        // 创建时间
 
   VideoInfo({
     required this.videoId,

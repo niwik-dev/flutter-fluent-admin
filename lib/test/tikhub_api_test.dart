@@ -1,10 +1,14 @@
-import 'package:flutter_admin/api/restful/tikhub_api.dart';
-import 'package:flutter_admin/service/short_video/short_video_service.dart';
+import 'package:dio/dio.dart';
+
+import '../api/restful/tikhub_api.dart';
+import '../service/short_video/short_video_service.dart';
+import '../service/short_video/douyin_service.dart';
 
 Future<void> main() async {
-  ShortVideoService shortVideoService = ShortVideoService();
-  var videos = await shortVideoService.getDouYinVideo();
-  for (var video in videos) {
-    print(video.videoUrl);
-  }
+  // DouYinWebApi douYinWebApi = DouYinWebApi();
+  // final fetchHomeFeed = await douYinWebApi.fecthHomeFeed(count: 1, freshIndex: 1);
+  // print(fetchHomeFeed.toJson()); 
+  DouYinWebService shortVideoService = DouYinWebService();
+  final videoList = await shortVideoService.getDouYinVideo();
+  print(videoList);
 }

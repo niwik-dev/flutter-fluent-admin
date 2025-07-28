@@ -33,8 +33,12 @@ Widget pageDiskView(BuildContext context){
     );
 
     var timer = Timer.periodic(const Duration(seconds: 30), (_) async {
-      diskTotal.value = (await service.getTotalDiskSpace())!;
-      diskFree.value = (await service.getFreeDiskSpace())!;
+      try{
+        diskTotal.value = (await service.getTotalDiskSpace())!;
+        diskFree.value = (await service.getFreeDiskSpace())!;
+      }catch(e){
+        
+      }
       diskUsed.value = diskTotal.value - diskFree.value;
       isDataFetched.value = true;
     });
