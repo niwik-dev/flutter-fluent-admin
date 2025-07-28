@@ -1,0 +1,143 @@
+name: flutter_admin
+description: "Flutter Admin"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+environment:
+  sdk: ^3.5.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # WindowManager：窗口管理库，提供无边框更定制化的窗口效果
+  window_manager: ^0.4.2
+  # 异步库，提供可以被打断的异步操作
+  async: 2.13.0
+
+  # FlChart: 综合图标库
+  fl_chart: ^0.71.0
+  # 时钟小摆件
+  flutter_analog_clock: ^1.0.3
+  # Lottie动画
+  lottie: ^3.3.1
+  # Markdown渲染
+  gpt_markdown: ^1.0.10
+
+  # MediaKit：用于全平台播放视频
+  media_kit: ^1.1.11 # Primary package.
+  media_kit_video: ^1.2.5 # For video rendering.
+  media_kit_libs_video: ^1.0.5 # Native video dependencies.
+
+  # SQLite数据库驱动
+  sqflite: ^2.4.1
+  # Floor: SQLite ORM库
+  floor: ^1.5.0
+
+  # FluentUI：FluentUI设计，目前Flutter较为流行且成熟的组件库
+  fluent_ui: ^4.6.0
+  # Scrollable Positioned List：滚动列表
+  scrollable_positioned_list: ^0.3.8
+  # Flutter Hooks：提供React类似的Hooks，用于（局部）状态管理
+  # HookWidget局部取代StatefulWidget，提供更简洁的代码写法
+  flutter_hooks: ^0.20.5
+
+  # Linq In Dart：类似于C# LINQ，提供更简洁的集合操作
+  darq: ^2.0.0
+  # 获取系统信息
+  system_info2: ^4.0.0
+  # 获取硬盘空间
+  disk_space_2: ^1.0.10
+  # 获取网络信息
+  network_info_plus: ^6.1.4
+
+  # 响应式布局
+  responsive_toolkit: ^0.0.6
+
+  # Dio： Flutter目前最主流的，基于HttpClient的Http请求库
+  dio: ^5.8.0+1
+
+  # Functional Widget：使得Flutter从类组件转变为函数式组件，更接近于React
+  functional_widget: ^0.10.2
+  # Functional Widget Annotation：用于build_runner生成样板代码
+  functional_widget_annotation: ^0.10.0
+
+  # Freezed：Flutter中基于类组件的序列化框架
+  freezed_annotation: ^2.4.4
+  freezed: ^2.5.7
+
+  # Riverpod：Flutter全局状态管理库，适用于大型项目
+  flutter_riverpod: ^2.5.1
+  # Riverpod Annotation：用于build_runner生成样板代码
+  riverpod_annotation: ^2.3.5
+  # Hooks Riverpod：Rivepod的Hooks适配库
+  hooks_riverpod: ^2.6.1
+
+  # Staggered Grid View：瀑布流布局库
+  flutter_staggered_grid_view: ^0.7.0
+
+  # UUID：生成UUID
+  uuid: ^4.5.1
+
+  # Notifications：原生通知调用
+  flutter_local_notifications: ^18.0.1
+
+  # MSIX：用于生成Windows 10 应用程序包
+  msix: ^3.16.8
+
+  # GoRouter：更好用的声明式路由框架
+  go_router: ^14.2.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # Riverpod Generator: Riverpod 源代码生成器
+  riverpod_generator: ^2.4.3
+  # Floor Generator: Floor 源代码生成器
+  floor_generator: ^1.4.2
+
+  # 用于生成样板代码，搭配代码生成器使用
+  build_runner: ^2.4.8
+  # Lints Libs：静态代码分析
+  flutter_lints: ^4.0.0
+
+  # 解决build_runner报错问题
+  # issue#7600: https://github.com/flutter/flutter-intellij/issues/7600
+  analyzer: ^6.3.0
+  custom_lint_core: ^0.6.6
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    # 字体：未来圆 Future Circle
+    - assets/fonts/fc-regular.ttf
+    # 背景图片
+    # 登录页亮色/暗色背景图片
+    - assets/images/auth-page/dark-bg.jpg
+    - assets/images/auth-page/light-bg.jpg
+
+    # 错误页配图
+    - assets/images/404.png
+
+    # Lottie动画
+    - assets/lottie/weather/rainfall.json
+    - assets/lottie/weather/sunny.json
+    - assets/lottie/weather/sunrise.json
+
+  fonts:
+    - family: fc-regular
+      fonts:
+        - asset: assets/fonts/fc-regular.ttf
+
+# build runner configuration
+targets:
+  $default:
+    builders:
+      json_serializable:
+        enabled: true
+        generate_for:
+          include:
+            - lib/**.dart
+            - lib/**.g.dart
