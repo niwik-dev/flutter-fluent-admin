@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_admin/service/short_video/douyin_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,9 +10,9 @@ class ShortVideoService{
   late ShortVideoStore shortVideoStoreNotifier;
   
   // 每次加载的短视频数量
-  static const int videoCountPerLoading = 10;
+  static const int videoCountPerLoading = 8;
   // 最少提前加载短视频数量
-  static const int minVideoCountPreLoad = 1;
+  static const int minVideoCountPreLoad = 4;
 
   DouYinWebService douYinWebService = DouYinWebService();
 
@@ -19,25 +20,43 @@ class ShortVideoService{
     return shortVideoStore.videoList.length > shortVideoStore.currentVideoIndex - minVideoCountPreLoad;
   }
 
+  bool isNeedLoadNewVideo(){ 
+    return shortVideoStore.videoList.length - shortVideoStore.currentVideoIndex < minVideoCountPreLoad;
+  }
+
   ShortVideoService(WidgetRef ref){
     shortVideoStore = ref.watch(shortVideoStoreProvider);
     shortVideoStoreNotifier = ref.watch(shortVideoStoreProvider.notifier);
   }
+
+  VideoInfo? getCurrentVideo(){
+    return shortVideoStoreNotifier.getCurrentVideo();
+  }
+
+  VideoInfo getPrevVideo(){
+    return shortVideoStoreNotifier.getPrevVideo();
+  }
+
+  VideoInfo getNextVideo(){
+    return shortVideoStoreNotifier.getNextVideo();
+  }
   
   Future<void> loadNewShortVideoList() async{ 
-    if(shortVideoStore.videoList.length - shortVideoStore.currentVideoIndex >= minVideoCountPreLoad){
-      return;
-    }
     List<VideoInfo> totalVideoList = [];
     while(totalVideoList.length < videoCountPerLoading){
       final videoList = await douYinWebService.getDouYinVideo();
+      // 移除无视频链接的元素
+      videoList.removeWhere((element) => element.videoUrl == null);
       totalVideoList.addAll(videoList);
     }
     shortVideoStoreNotifier.addNewVideos(totalVideoList);
   }
 
-  VideoInfo getCurrentVideo(){
-    return shortVideoStoreNotifier.getCurrentVideo();
+  Future<VideoInfo?> gotoVideoAt(int index) async{
+    if(isNeedLoadNewVideo()){
+      loadNewShortVideoList();
+    }
+    return shortVideoStoreNotifier.gotoVideoAt(index);
   }
 
   Future<VideoInfo?> gotoNextVideo() async{

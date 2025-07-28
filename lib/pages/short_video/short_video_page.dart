@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_admin/model/view/video_info.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,20 +19,33 @@ Widget shortVideoPage(BuildContext context, WidgetRef ref){
   final shortVideoStore = ref.watch(shortVideoStoreProvider);
   final shortVideoService = ShortVideoService(ref);
 
+  var isPlaying = useState(false);
   var player = useMemoized(() => Player());
   final videoController = useMemoized(() => VideoController(player));
   final PageController pageController = usePageController();
   
   useEffect(() {
-    shortVideoService.loadNewShortVideoList().then(
-      (_) {
-        player.open(
-          Media(
-            shortVideoService.getCurrentVideo().videoUrl!
-          )
-        );
-      }
-    );
+    player.stream.playlist.listen((playlist) {
+      isPlaying.value = playlist.medias.isNotEmpty;
+    });
+
+    if(shortVideoStore.videoList.isEmpty){
+      shortVideoService.loadNewShortVideoList().then(
+        (_) {
+          player.open(
+            Media(
+              shortVideoService.getCurrentVideo()!.videoUrl!
+            )
+          );
+        }
+      );
+    }else{
+      player.open(
+        Media(
+          shortVideoService.getCurrentVideo()!.videoUrl!
+        )
+      );
+    }
     return () => player.dispose();
   }, []);
 
@@ -47,7 +61,7 @@ Widget shortVideoPage(BuildContext context, WidgetRef ref){
         vertical: 32,
         horizontal: 16
       ),
-      child: shortVideoService.isVideoLoadingFinished() && player.state.playing ?
+      child: shortVideoService.isVideoLoadingFinished() && isPlaying.value ?
       PageView.builder(
         scrollDirection: Axis.vertical,
         controller: pageController,
@@ -58,9 +72,14 @@ Widget shortVideoPage(BuildContext context, WidgetRef ref){
           );
         },
         onPageChanged: (index){
-          shortVideoService.gotoNextVideo();
-          player.open(
-            Media(shortVideoService.getCurrentVideo().videoUrl!)
+          shortVideoService.gotoVideoAt(index).then(
+            (VideoInfo? videoInfo) {
+              player.open(
+                Media(
+                  videoInfo!.videoUrl!
+                )
+              );
+            }
           );
         },
       ) : const VideoLoading()
