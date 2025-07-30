@@ -5,7 +5,24 @@ import '../../model/store/login_user.dart';
 
 part 'login_store.g.dart';
 
-@Riverpod(keepAlive: true)
-LoginUser loginUserStore(Ref ref){
-  return LoginUser();
+@riverpod
+class LoginUserStore extends _$LoginUserStore {
+  @override
+  LoginUser build() {
+    return LoginUser();
+  }
+
+  void setLoginUser(LoginUser user){
+    state = user;
+  }
+
+  void logout(){
+    state = LoginUser(
+      isLoggedIn: false,
+      username: '游客',
+      avatarUrl: null,
+      accessToken: null,
+      captchaKey: null
+    );
+  }
 }

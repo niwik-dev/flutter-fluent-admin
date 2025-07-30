@@ -6,12 +6,13 @@ part of 'login_store.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginUserStoreHash() => r'd5ebff99f8d7e7185f1a56648d53fdc5487ee4a7';
+String _$loginUserStoreHash() => r'86a1f8287dbc5183bfe13fc40a953f665d8643c4';
 
-/// See also [loginUserStore].
-@ProviderFor(loginUserStore)
-final loginUserStoreProvider = Provider<LoginUser>.internal(
-  loginUserStore,
+/// See also [LoginUserStore].
+@ProviderFor(LoginUserStore)
+final loginUserStoreProvider =
+    AutoDisposeNotifierProvider<LoginUserStore, LoginUser>.internal(
+  LoginUserStore.new,
   name: r'loginUserStoreProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
@@ -20,8 +21,6 @@ final loginUserStoreProvider = Provider<LoginUser>.internal(
   allTransitiveDependencies: null,
 );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LoginUserStoreRef = ProviderRef<LoginUser>;
+typedef _$LoginUserStore = AutoDisposeNotifier<LoginUser>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

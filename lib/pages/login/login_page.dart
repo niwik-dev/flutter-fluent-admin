@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_admin/api/restful/auth_api.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +20,19 @@ part 'login_page.g.dart';
 Widget loginForm(BuildContext context,WidgetRef ref){
   var username = useState<String>('');
   var password = useState<String>('');
+  var captcha = useState<String>('');
   var rememberLogin = useState<bool>(false);
+  var captchaImage = useState<Image?>(null);
+
+  AuthApi authApi = AuthApi();
+
+  useEffect((){
+    authApi.fetchCaptcha().then(
+      (image) {
+        captchaImage.value = image;
+      }
+    );
+  },[]);
 
   return SizedBox(
     width: 420,
@@ -98,6 +111,43 @@ Widget loginForm(BuildContext context,WidgetRef ref){
         const SizedBox(height: 16),
         Row(
           children: [
+            Expanded(
+              child: TextBox(
+                placeholder: '验证码',
+                prefix: const Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Icon(
+                    FluentIcons.contact,
+                    size: 16,
+                  ),
+                ),
+                style: FluentTheme.of(context).typography.body,
+                onChanged: (value) {
+                  captcha.value = value;
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              child: SizedBox(
+                width: 120,
+                height: 30,
+                child: captchaImage.value ?? const Placeholder(),
+              ),
+              onTap: () {
+                // 刷新验证码
+                authApi.fetchCaptcha().then(
+                  (image) {
+                    captchaImage.value = image;
+                  }
+                );
+              },
+            )
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
             Checkbox(
               content: Text(
                 '记住登录',
@@ -126,14 +176,33 @@ Widget loginForm(BuildContext context,WidgetRef ref){
               '登录',
               style: FluentTheme.of(context).typography.body,
             ),
-            onPressed: () {
+            onPressed: () async {
               // 这边模拟登录过程，调用接口
-
-              context.go('/');
-              var loginUser = ref.read(loginUserStoreProvider);
-              loginUser.isLoggedIn = true;
-              if(username.value!=''){
-                loginUser.username = username.value;
+              bool success = await authApi.login(
+                username: username.value,
+                password: password.value,
+                captcha: captcha.value,
+              );
+              if(success){
+                context.go('/');
+              }else{
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return ContentDialog(
+                      title: const Text('登录失败'),
+                      content: const Text('用户名或密码错误'),
+                      actions: [
+                        Button(
+                          child: const Text('确定'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ]
+                    );
+                  }
+                );
               }
             },
           ),
