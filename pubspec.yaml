@@ -30,6 +30,9 @@ dependencies:
   media_kit_video: ^1.2.5 # For video rendering.
   media_kit_libs_video: ^1.0.5 # Native video dependencies.
 
+  # OpenIM 全平台社区支持包
+  flutter_openim_sdk_ffi: ^3.8.3-alpha.20
+
   # SQLite数据库驱动
   sqflite: ^2.4.1
   # Floor: SQLite ORM库

@@ -4,6 +4,7 @@ import 'package:flutter_admin/pages/error/error_page.dart';
 import 'package:flutter_admin/pages/index/index_page.dart';
 import 'package:go_router/go_router.dart';
 
+import '../pages/message/message_page.dart';
 import '../pages/short_video/short_video_page.dart';
 import '../router/navigation/route.dart';
 import '../layout/layout.dart';
@@ -79,6 +80,11 @@ class AppRouter{
                         title: const Text('短视频'),
                         icon: const Icon(FluentIcons.video),
                         body: const ShortVideoPage(),
+                      ),
+                      PaneItem(
+                        title: const Text('消息'),
+                        icon: const Icon(FluentIcons.message),
+                        body: const MessagePage(),
                       )
                     ],
                     footerItems: [
