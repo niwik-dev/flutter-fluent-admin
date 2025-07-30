@@ -6,7 +6,7 @@ part of 'short_video_store.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$shortVideoStoreHash() => r'61917bc159b2602a583dd83de0b8ac42e0c435a3';
+String _$shortVideoStoreHash() => r'ff41f98671a96158ff7b1192bc6c2b4918af470d';
 
 /// See also [ShortVideoStore].
 @ProviderFor(ShortVideoStore)

@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_admin/service/openim/uniform/openim_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:media_kit/media_kit.dart';
@@ -13,6 +14,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   WindowUtils.initialize();
   MediaKit.ensureInitialized();
+  OpenIMInitializer().init();
+
   runApp(const ProviderScope(
     child: DashboardApp(),
   ));

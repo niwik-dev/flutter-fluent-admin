@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_admin/service/short_video/douyin_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/view/video_info.dart';
 import '../../store/short_video/short_video_store.dart';
+import 'douyin_service.dart';
 
 class ShortVideoService{
   late var shortVideoStore;
@@ -15,10 +14,6 @@ class ShortVideoService{
   static const int minVideoCountPreLoad = 4;
 
   DouYinWebService douYinWebService = DouYinWebService();
-
-  bool isVideoLoadingFinished(){    
-    return shortVideoStore.videoList.length > shortVideoStore.currentVideoIndex - minVideoCountPreLoad;
-  }
 
   bool isNeedLoadNewVideo(){ 
     return shortVideoStore.videoList.length - shortVideoStore.currentVideoIndex < minVideoCountPreLoad;
